@@ -1,7 +1,7 @@
-import { SaveContact } from "./save";
+import { SaveContact } from "../storage/save";
 import { AskName } from "../inputs/name";
 import { AskPhone } from "../inputs/phone";
-import { LoadData } from "./load";
+import { LoadData } from "../storage/load";
 import { ValidateStringLength } from "../validations/stringLength";
 import { GetValidInput } from "../inputs/get";
 
