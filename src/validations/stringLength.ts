@@ -2,14 +2,8 @@ export function ValidateStringLength(
   str: string,
   min: number,
   max: number
-): [true] | [false, string] {
-  if (str.length < min) {
-    return [false, `String is too short. Minimum length is ${min}.`];
-  }
-
-  if (str.length > max) {
-    return [false, `String is too long. Maximum length is ${max}.`];
-  }
-
-  return [true];
+): string | undefined {
+  if (str.length < min) return `Too short. Minimum ${min} characters.`;
+  if (str.length > max) return `Too long. Maximum ${max} characters.`;
+  return undefined;
 }

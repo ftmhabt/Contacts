@@ -1,36 +1,42 @@
-import { createInterface } from "readline";
+import { outro, select, log } from "@clack/prompts";
+import color from "kleur";
 import Add from "./actions/add";
 import Show from "./actions/show";
-import AskMenuItem from "./inputs/menuItem";
-import AskReturn from "./inputs/return";
-const rl = createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
+import Edit from "./actions/edit";
+import Delete from "./actions/delete";
+
 export async function App() {
-  console.log("\n📒 Contact Manager");
-  console.log("1. Add Contact");
-  console.log("2. Show Contacts");
-  console.log("0. Exit\n");
+  log.message("Contact Manager", { symbol: color.yellow("◈") });
 
-  const answer = await AskMenuItem();
+  const action = await select({
+    message: "What do you want to do?",
+    options: [
+      { label: "Add Contact", value: "add" },
+      { label: "Show Contacts", value: "show" },
+      { label: "Edit Contact", value: "edit" },
+      { label: "Delete Contact", value: "delete" },
+      { label: "Exit", value: "exit" },
+    ],
+  });
 
-  switch (answer.trim()) {
-    case "1":
+  switch (action) {
+    case "add":
       await Add();
-      App();
       break;
-    case "2":
+    case "show":
       Show();
-      if (await AskReturn()) App();
       break;
-    case "0":
-      console.log("Goodbye!");
-      rl.close();
+    case "edit":
+      await Edit();
       break;
+    case "delete":
+      await Delete();
+      break;
+    case "exit":
     default:
-      console.log("Invalid option. Try again.");
-      App();
-      break;
+      outro("Goodbye!");
+      return;
   }
+
+  await App();
 }

@@ -1,5 +1,6 @@
 import { existsSync, readFileSync } from "fs";
-import { FILE_PATH } from "../config/config";
+import { FILE_PATH } from "../config";
+import { log } from "@clack/prompts";
 
 export function LoadData(): {
   name: string;
@@ -13,8 +14,8 @@ export function LoadData(): {
         return parsed;
       }
     } catch (error) {
-      console.error("file corrupted");
-      console.log("new file created");
+      log.error("file corrupted");
+      log.info("new file created");
     }
   }
   return [];
