@@ -1,22 +1,27 @@
-import { text, spinner, log, isCancel, cancel } from "@clack/prompts";
+import { text, log, isCancel } from "@clack/prompts";
 import { SaveContact } from "../storage/save";
-import { LoadData } from "../storage/load";
 import { ValidateStringLength } from "../validations/stringLength";
 import { ValidateNumericInput } from "../validations/numericInput";
+import { getValidInput } from "./get-valid-input";
 
 export default async function Add() {
-  const name = (await text({
-    message: "Enter name:",
-    validate: (input) => ValidateStringLength(input, 3, 20),
-  })) as string;
+  const name = await getValidInput(
+    "Enter name:",
+    "",
+    (input) => ValidateStringLength(input, 3, 20) || undefined
+  );
+  if (!name) return;
 
-  const phone = (await text({
-    message: "Enter phone:",
-    validate: (input) =>
-      ValidateStringLength(input, 4, 12) || ValidateNumericInput(input),
-  })) as string;
+  const phone = await getValidInput(
+    "Enter phone:",
+    "",
+    (input) =>
+      ValidateStringLength(input, 4, 12) ||
+      ValidateNumericInput(input) ||
+      undefined
+  );
+  if (!phone) return;
 
   SaveContact({ name, phone });
-
   log.success("Contact saved!");
 }

@@ -1,7 +1,10 @@
 import { LoadData } from "../storage/load";
-import { select, text, log } from "@clack/prompts";
+import { log } from "@clack/prompts";
 import { SaveContact } from "../storage/save";
 import { Select } from "./select";
+import { getValidInput } from "./get-valid-input";
+import { ValidateStringLength } from "../validations/stringLength";
+import { ValidateNumericInput } from "../validations/numericInput";
 
 export default async function Edit() {
   const index = await Select("Select a contact to edit:");
@@ -9,17 +12,25 @@ export default async function Edit() {
 
   const contacts = LoadData();
 
-  const newName = (await text({
-    message: "Enter new name:",
-    initialValue: contacts[index].name,
-  })) as string;
+  const newName = await getValidInput(
+    "Enter new name:",
+    contacts[index].name,
+    (input) => ValidateStringLength(input, 3, 20) || undefined
+  );
+  if (!newName) {
+    log.warn("Edit cancelled.");
+    return;
+  }
 
-  const newPhone = (await text({
-    message: "Enter new phone number:",
-    initialValue: contacts[index].phone,
-  })) as string;
-
-  if (!newName || !newPhone) {
+  const newPhone = await getValidInput(
+    "Enter new phone number:",
+    contacts[index].phone,
+    (input) =>
+      ValidateStringLength(input, 4, 12) ||
+      ValidateNumericInput(input) ||
+      undefined
+  );
+  if (!newPhone) {
     log.warn("Edit cancelled.");
     return;
   }
