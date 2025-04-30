@@ -1,9 +1,7 @@
 import { LoadData } from "../storage/load";
-import { writeFileSync } from "fs";
-import { FILE_PATH } from "../config";
 import { confirm, log } from "@clack/prompts";
-import { EnsureDirectoryExists } from "../storage/exist";
 import { Select } from "./select";
+import { SaveAllContacts } from "../storage/save-all";
 
 export default async function Delete() {
   const index = await Select("Select a contact to delete:");
@@ -20,8 +18,7 @@ export default async function Delete() {
   }
 
   contacts.splice(index, 1);
-  EnsureDirectoryExists(FILE_PATH);
-  writeFileSync(FILE_PATH, JSON.stringify(contacts, null, 2));
+  SaveAllContacts(contacts);
 
   log.success("Contact deleted.");
 }

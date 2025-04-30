@@ -1,17 +1,11 @@
-import { writeFileSync } from "fs";
-import { FILE_PATH } from "../config";
-import { EnsureDirectoryExists } from "./exist";
+import { Contact } from "../types";
 import { LoadData } from "./load";
+import { SaveAllContacts } from "./save-all";
 
-export function SaveContact(
-  contact: { name: string; phone: string },
-  index: number = -1
-) {
-  EnsureDirectoryExists(FILE_PATH);
-  const prevData = LoadData();
+export function SaveContact(contact: Contact, index: number = -1) {
+  const contacts = LoadData();
+  if (index < 0) contacts.push(contact);
+  else contacts[index] = contact;
 
-  if (index < 0) prevData.push(contact);
-  else prevData[index] = contact;
-
-  writeFileSync(FILE_PATH, JSON.stringify(prevData, null, 2));
+  SaveAllContacts(contacts);
 }
