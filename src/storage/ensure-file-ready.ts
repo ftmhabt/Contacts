@@ -5,8 +5,12 @@ import { SafeWriteFile } from "./write";
 
 export function EnsureFileReady(path: string, defaultContent = "[]") {
   const dir = dirname(path);
-  if (!existsSync(dir)) {
-    mkdirSync(dir, { recursive: true });
+  try {
+    if (!existsSync(dir)) {
+      mkdirSync(dir, { recursive: true });
+    }
+  } catch {
+    log.error("Failed to create directory.");
   }
 
   if (!existsSync(path)) {
