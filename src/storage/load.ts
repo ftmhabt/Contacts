@@ -4,21 +4,25 @@ import { log } from "@clack/prompts";
 import { EnsureFileReady } from "./ensure-file-ready";
 import { SafeWriteFile } from "./write";
 
-export function LoadData(): {
+type Contact = {
   name: string;
   phone: string;
-}[] {
+};
+
+export function LoadData(): Contact[] {
   EnsureFileReady(FILE_PATH);
 
   try {
-    const data = readFileSync(FILE_PATH, "utf-8");
-    const parsed = JSON.parse(data);
-    if (Array.isArray(parsed)) return parsed;
-    else throw new Error();
-  } catch {
-    log.error("Data file is corrupted.");
+    const raw = readFileSync(FILE_PATH, "utf-8");
+    const data = JSON.parse(raw);
+
+    if (!Array.isArray(data)) throw new Error("Invalid JSON format");
+
+    return data;
+  } catch (err) {
+    log.error("Failed to load data. File is corrupted or unreadable.");
+    log.info("Creating a new empty contact list.");
     SafeWriteFile(FILE_PATH, "[]");
-    log.info("New file created to replace corrupted one.");
+    return [];
   }
-  return [];
 }
