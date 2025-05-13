@@ -1,13 +1,8 @@
 import { readFileSync } from "fs";
-import { FILE_PATH } from "../config";
-import { log } from "@clack/prompts";
-import { EnsureFileReady } from "./ensure-file-ready";
+import { FILE_PATH } from "../config/config";
 import { SafeWriteFile } from "./write";
-
-type Contact = {
-  name: string;
-  phone: string;
-};
+import { Contact } from "../types/contact";
+import { EnsureFileReady, HandleError } from "../utils";
 
 export function LoadData(): Contact[] {
   EnsureFileReady(FILE_PATH);
@@ -20,8 +15,7 @@ export function LoadData(): Contact[] {
 
     return data;
   } catch (err) {
-    log.error("Failed to load data. File is corrupted or unreadable.");
-    log.info("Creating a new empty contact list.");
+    HandleError(err);
     SafeWriteFile(FILE_PATH, "[]");
     return [];
   }

@@ -1,6 +1,6 @@
 import { isCancel, text, log } from "@clack/prompts";
 
-export async function getValidInput(
+export async function GetValidInput(
   message: string,
   initialValue?: string,
   validate?: (input: string) => string | undefined

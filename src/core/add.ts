@@ -1,18 +1,17 @@
-import { text, log, isCancel } from "@clack/prompts";
+import { log } from "@clack/prompts";
 import { SaveContact } from "../storage/save";
-import { ValidateStringLength } from "../validations/stringLength";
-import { ValidateNumericInput } from "../validations/numericInput";
-import { getValidInput } from "./get-valid-input";
+import { ValidateNumericInput, ValidateStringLength } from "../validation";
+import { GetValidInput } from "../utils";
 
-export default async function Add() {
-  const name = await getValidInput(
+export async function Add() {
+  const name = await GetValidInput(
     "Enter name:",
     "",
     (input) => ValidateStringLength(input, 3, 20) || undefined
   );
   if (!name) return;
 
-  const phone = await getValidInput(
+  const phone = await GetValidInput(
     "Enter phone:",
     "",
     (input) =>

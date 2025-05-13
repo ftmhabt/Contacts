@@ -1,14 +1,13 @@
-import { LoadData } from "../storage/load";
 import { confirm, log } from "@clack/prompts";
+import { SaveAllContacts } from "../storage/saveAll";
 import { Select } from "./select";
-import { SaveAllContacts } from "../storage/save-all";
+import { contacts } from "../cli/app";
 
-export default async function Delete() {
+export async function Delete() {
   try {
     const index = await Select("Select a contact to delete:");
     if (index === null) return;
 
-    const contacts = LoadData();
     if (contacts.length === 0) {
       log.info("No contacts to delete.");
       return;

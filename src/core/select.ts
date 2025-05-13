@@ -1,10 +1,8 @@
-import { LoadData } from "../storage/load";
-import { log, select, isCancel } from "@clack/prompts";
+import { log, select } from "@clack/prompts";
+import { contacts } from "../cli/app";
 
 export async function Select(promptMsg = "Select a contact:") {
   try {
-    const contacts = LoadData();
-
     if (contacts.length === 0) {
       log.message("No contacts to show.", { symbol: "◇" });
       return null;

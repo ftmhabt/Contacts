@@ -1,11 +1,9 @@
-import { LoadData } from "../storage/load";
-import { log, note } from "@clack/prompts";
 import Table from "cli-table3";
+import { log, note } from "@clack/prompts";
+import { contacts } from "../cli/app";
 
-export default function Show() {
+export function Show() {
   try {
-    const contacts = LoadData();
-
     if (contacts.length === 0) {
       log.message("No contacts to show.", { symbol: "◇" });
       return;

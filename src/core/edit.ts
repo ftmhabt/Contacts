@@ -1,18 +1,15 @@
-import { LoadData } from "../storage/load";
 import { log } from "@clack/prompts";
 import { SaveContact } from "../storage/save";
 import { Select } from "./select";
-import { getValidInput } from "./get-valid-input";
-import { ValidateStringLength } from "../validations/stringLength";
-import { ValidateNumericInput } from "../validations/numericInput";
+import { GetValidInput } from "../utils/getValidInput";
+import { ValidateNumericInput, ValidateStringLength } from "../validation";
+import { contacts } from "../cli/app";
 
-export default async function Edit() {
+export async function Edit() {
   const index = await Select("Select a contact to edit:");
   if (index === null) return;
 
-  const contacts = LoadData();
-
-  const newName = await getValidInput(
+  const newName = await GetValidInput(
     "Enter new name:",
     contacts[index].name,
     (input) => ValidateStringLength(input, 3, 20) || undefined
@@ -22,7 +19,7 @@ export default async function Edit() {
     return;
   }
 
-  const newPhone = await getValidInput(
+  const newPhone = await GetValidInput(
     "Enter new phone number:",
     contacts[index].phone,
     (input) =>

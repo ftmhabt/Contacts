@@ -1,7 +1,7 @@
 import { log } from "@clack/prompts";
 import { accessSync, constants, existsSync, mkdirSync } from "fs";
 import { dirname } from "path";
-import { SafeWriteFile } from "./write";
+import { SafeWriteFile } from "../storage/write";
 
 export function EnsureFileReady(path: string, defaultContent = "[]") {
   const dir = dirname(path);
