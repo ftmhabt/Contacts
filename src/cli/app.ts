@@ -9,8 +9,8 @@ export async function App(): Promise<void> {
     initContacts();
     LogAppHeader();
     await runAppLoop();
-  } catch (err) {
-    HandleError(err);
+  } catch (error) {
+    HandleError(error);
   }
 }
 
