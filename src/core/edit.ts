@@ -1,38 +1,23 @@
 import { log } from "@clack/prompts";
-import { SaveContact } from "../storage/save";
-import { Select } from "./select";
-import { GetValidInput } from "../utils/getValidInput";
-import { ValidateNumericInput, ValidateStringLength } from "../validation";
-import { contacts } from "../cli/app";
+import { promptEditedContact } from "../cli/promptEditContact";
+import { getContacts } from "../services/contactRepository";
+import { editContact } from "../services/contactService";
+import { HandleError } from "../utils";
 
-export async function Edit() {
-  const index = await Select("Select a contact to edit:");
-  if (index === null) return;
+export async function Edit(): Promise<void> {
+  try {
+    const contacts = getContacts();
 
-  const newName = await GetValidInput(
-    "Enter new name:",
-    contacts[index].name,
-    (input) => ValidateStringLength(input, 3, 20) || undefined
-  );
-  if (!newName) {
-    log.warn("Edit cancelled.");
-    return;
+    const result = await promptEditedContact(contacts);
+    if (!result) {
+      log.warn("Edit cancelled.");
+      return;
+    }
+
+    const { index, updatedContact } = result;
+    editContact(index, updatedContact);
+    log.success("Contact updated successfully.");
+  } catch (error) {
+    HandleError(error);
   }
-
-  const newPhone = await GetValidInput(
-    "Enter new phone number:",
-    contacts[index].phone,
-    (input) =>
-      ValidateStringLength(input, 4, 12) ||
-      ValidateNumericInput(input) ||
-      undefined
-  );
-  if (!newPhone) {
-    log.warn("Edit cancelled.");
-    return;
-  }
-
-  SaveContact({ name: newName, phone: newPhone }, index);
-
-  log.success("Contact updated successfully.");
 }

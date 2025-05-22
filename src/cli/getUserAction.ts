@@ -1,6 +1,7 @@
 import { select } from "@clack/prompts";
+import { Action } from "../types/action";
 
-export async function GetActionFromUser(): Promise<string> {
+export async function GetActionFromUser(): Promise<Action> {
   const action = await select({
     message: "What do you want to do?",
     options: [
@@ -12,5 +13,5 @@ export async function GetActionFromUser(): Promise<string> {
     ],
   });
 
-  return action as string;
+  return action as Action;
 }

@@ -9,12 +9,12 @@ export async function GetValidInput(
     const input = await text({ message, initialValue, validate });
 
     if (isCancel(input) || typeof input !== "string") {
-      log.error("Unexpected input received.");
+      log.error("Input was cancelled or invalid.");
       return null;
     }
 
     return input;
-  } catch (error) {
+  } catch {
     log.error("Failed to get input.");
     return null;
   }

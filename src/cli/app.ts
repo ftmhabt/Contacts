@@ -1,25 +1,24 @@
-import { Contact } from "../types/contact";
-import { LoadData } from "../storage/load";
-import {
-  GetActionFromUser,
-  HandleAction,
-  HandleError,
-  LogAppHeader,
-} from "../utils";
+import { HandleAction } from "../core/handleAction";
+import { initContacts } from "../services/contactRepository";
+import { Action } from "../types/action";
+import { HandleError, LogAppHeader } from "../utils";
+import { GetActionFromUser } from "./getUserAction";
 
-export const contacts: Contact[] = LoadData();
-
-export async function App() {
+export async function App(): Promise<void> {
   try {
+    initContacts();
     LogAppHeader();
-
-    const action = await GetActionFromUser();
-    await HandleAction(action);
-
-    if (action !== "exit") {
-      await App();
-    }
+    await runAppLoop();
   } catch (err) {
     HandleError(err);
+  }
+}
+
+async function runAppLoop(): Promise<void> {
+  let exit = false;
+  while (!exit) {
+    const action: Action = await GetActionFromUser();
+    await HandleAction(action);
+    if (action === "exit") exit = true;
   }
 }

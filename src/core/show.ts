@@ -1,9 +1,11 @@
 import Table from "cli-table3";
 import { log, note } from "@clack/prompts";
-import { contacts } from "../cli/app";
+import { getContacts } from "../services/contactRepository";
 
-export function Show() {
+export async function Show(): Promise<void> {
   try {
+    const contacts = getContacts();
+
     if (contacts.length === 0) {
       log.message("No contacts to show.", { symbol: "◇" });
       return;

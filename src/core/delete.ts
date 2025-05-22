@@ -1,31 +1,39 @@
+import { SelectContactIndex } from "../cli/select";
+import { getContacts } from "../services/contactRepository";
+import { deleteContact } from "../services/contactService";
 import { confirm, log } from "@clack/prompts";
-import { SaveAllContacts } from "../storage/saveAll";
-import { Select } from "./select";
-import { contacts } from "../cli/app";
+import { HandleError } from "../utils";
 
-export async function Delete() {
+export async function Delete(): Promise<void> {
   try {
-    const index = await Select("Select a contact to delete:");
-    if (index === null) return;
+    const contacts = getContacts();
 
     if (contacts.length === 0) {
       log.info("No contacts to delete.");
       return;
     }
 
-    const confirmDelete = await confirm({
-      message: `Delete ${contacts[index].name}?`,
-    });
-
-    if (!confirmDelete) {
+    const index = await SelectContactIndex(
+      "Select a contact to delete:",
+      contacts
+    );
+    if (index === null) {
       log.info("Deletion cancelled.");
       return;
     }
 
-    contacts.splice(index, 1);
-    SaveAllContacts(contacts);
+    const confirmed = await confirm({
+      message: `Delete ${contacts[index].name}?`,
+    });
+
+    if (!confirmed) {
+      log.info("Deletion cancelled.");
+      return;
+    }
+
+    deleteContact(index);
     log.success("Contact deleted successfully.");
-  } catch {
-    log.error("An error occurred in deletion.");
+  } catch (error) {
+    HandleError(error);
   }
 }
