@@ -12,16 +12,18 @@ export async function Show(): Promise<void> {
     }
 
     const table = new Table({
-      head: ["#", "Name", "Phone"],
-      colWidths: [5, 25, 25],
+      head: ["#", "Name", "Phone", "Categories"],
+      colWidths: [5, 20, 20, 30],
       style: {
         head: ["green"],
         border: ["grey"],
       },
+      wordWrap: true,
     });
 
     contacts.forEach((c, i) => {
-      table.push([i + 1, c.name, c.phone]);
+      const categories = c.categories?.join(", ") || "-";
+      table.push([i + 1, c.name, c.phone, categories]);
     });
 
     note(table.toString(), "Contact List:");

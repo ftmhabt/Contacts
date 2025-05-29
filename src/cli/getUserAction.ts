@@ -9,6 +9,7 @@ export async function GetActionFromUser(): Promise<Action> {
       { label: "Show Contacts", value: "show" },
       { label: "Edit Contact", value: "edit" },
       { label: "Delete Contact", value: "delete" },
+      { label: "Manage Categories", value: "categories" },
       { label: "Exit", value: "exit" },
     ],
   });

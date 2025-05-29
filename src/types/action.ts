@@ -1,1 +1,1 @@
-export type Action = "add" | "show" | "edit" | "delete" | "exit";
+export type Action = "add" | "show" | "edit" | "delete" | "categories" | "exit";

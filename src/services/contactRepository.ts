@@ -1,13 +1,30 @@
 import { Contact } from "../types/contact";
-import { LoadData } from "../storage/load";
-import { EnsureFileReady } from "../utils";
-import { SafeWriteFile } from "../storage/write";
-import { FILE_PATH } from "../config/config";
+import { EnsureFileReady, HandleError } from "../utils";
+import { SafeWriteFile } from "../utils/safeWrite";
+import { FILE_PATH } from "../config/paths";
+import { readFileSync } from "fs";
+
+export function loadData(): Contact[] {
+  EnsureFileReady(FILE_PATH);
+
+  try {
+    const raw = readFileSync(FILE_PATH, "utf-8");
+    const data = JSON.parse(raw);
+
+    if (!Array.isArray(data)) throw new Error("Invalid JSON format");
+
+    return data;
+  } catch (err) {
+    HandleError(err);
+    SafeWriteFile(FILE_PATH, "[]");
+    return [];
+  }
+}
 
 let contacts: Contact[] = [];
 
 export function initContacts(): void {
-  contacts = LoadData();
+  contacts = loadData();
 }
 
 export function getContacts(): Contact[] {
