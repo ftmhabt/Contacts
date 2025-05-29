@@ -1,6 +1,6 @@
 import Table from "cli-table3";
 import { log, note } from "@clack/prompts";
-import { getContacts } from "../services/contactRepository";
+import { getContacts } from "../../services/contactRepository";
 
 export async function Show(): Promise<void> {
   try {

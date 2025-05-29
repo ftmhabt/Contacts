@@ -1,8 +1,8 @@
 import { log } from "@clack/prompts";
-import { promptEditedContact } from "../cli/promptEditContact";
-import { getContacts } from "../services/contactRepository";
-import { editContact } from "../services/contactService";
-import { HandleError } from "../utils";
+import { getContacts } from "../../services/contactRepository";
+import { promptEditedContact } from "../../cli/contact/promptEditContact";
+import { editContact } from "../../services/contactService";
+import { HandleError } from "../../utils";
 
 export async function Edit(): Promise<void> {
   try {

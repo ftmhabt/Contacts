@@ -1,7 +1,7 @@
-import { HandleAction } from "../core/handleAction";
-import { Action } from "../types/action";
+import { MainAction } from "../types/action";
 import { HandleError, LogAppHeader } from "../utils";
 import { GetActionFromUser } from "./getUserAction";
+import { HandleAction } from "./handleAction";
 
 export async function App(): Promise<void> {
   try {
@@ -13,7 +13,7 @@ export async function App(): Promise<void> {
 }
 
 async function runAppLoop() {
-  const action: Action = await GetActionFromUser();
+  const action: MainAction = await GetActionFromUser();
   await HandleAction(action);
 
   runAppLoop();

@@ -2,11 +2,11 @@ import {
   combineValidators,
   ValidateStringLength,
   ValidateNumericInput,
-} from "../validation";
-import { GetValidInput } from "../utils";
-import { Contact } from "../types/contact";
+} from "../../validation";
+import { GetValidInput } from "../../utils";
+import { Contact } from "../../types/contact";
 import { isCancel, multiselect } from "@clack/prompts";
-import { getCategoryList } from "../services/categoryRepository";
+import { getCategoryList } from "../../services/categoryRepository";
 
 const nameValidator = combineValidators((s) => ValidateStringLength(s, 3, 20));
 
@@ -30,6 +30,7 @@ export async function promptContactData(): Promise<Contact | null> {
 
 async function promptCategories(): Promise<string[] | null> {
   const allCategories = getCategoryList();
+  if (!allCategories) return null;
   if (allCategories.length === 0) return [];
 
   const selection = await multiselect({

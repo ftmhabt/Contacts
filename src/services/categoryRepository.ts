@@ -4,6 +4,7 @@ import { CATEGORIES_FILE_PATH } from "../config/paths";
 import { readFileSync } from "fs";
 import { INITIAL_CATEGORIES } from "../config/constants";
 import { getContacts } from "./contactRepository";
+import { log } from "@clack/prompts";
 
 let categories: string[] = [];
 
@@ -44,7 +45,12 @@ function getUsedCategories(): string[] {
   );
 }
 
-export function getCategoryList(): string[] {
+export function getCategoryList(): string[] | null {
+  if (categories.length === 0) {
+    log.message("No categories available.");
+    return null;
+  }
+
   return categories;
 }
 

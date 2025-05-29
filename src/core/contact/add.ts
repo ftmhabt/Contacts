@@ -1,7 +1,7 @@
 import { log } from "@clack/prompts";
-import { promptContactData } from "../cli/promptContactData";
-import { addContact } from "../services/contactService";
-import { HandleError } from "../utils";
+import { promptContactData } from "../../cli/contact/promptContactData";
+import { addContact } from "../../services/contactService";
+import { HandleError } from "../../utils";
 
 export async function Add(): Promise<void> {
   try {

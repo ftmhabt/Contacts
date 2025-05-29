@@ -1,8 +1,8 @@
-import { SelectContactIndex } from "../cli/select";
-import { getContacts } from "../services/contactRepository";
-import { deleteContact } from "../services/contactService";
 import { confirm, log } from "@clack/prompts";
-import { HandleError } from "../utils";
+import { getContacts } from "../../services/contactRepository";
+import { SelectContactIndex } from "../../cli/select";
+import { deleteContact } from "../../services/contactService";
+import { HandleError } from "../../utils";
 
 export async function Delete(): Promise<void> {
   try {
