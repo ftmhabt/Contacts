@@ -8,7 +8,7 @@ export async function Add(): Promise<void> {
     const category = await promptCategoryName();
     if (!category) return;
 
-    addCategory(category);
+    await addCategory(category);
     log.success("Category added!");
   } catch (error) {
     HandleError(error);

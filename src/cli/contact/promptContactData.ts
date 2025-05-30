@@ -7,6 +7,7 @@ import { GetValidInput } from "../../utils";
 import { Contact } from "../../types/contact";
 import { isCancel, multiselect } from "@clack/prompts";
 import { getCategoryList } from "../../services/categoryRepository";
+import { getContacts } from "../../services/contactRepository";
 
 const nameValidator = combineValidators((s) => ValidateStringLength(s, 3, 20));
 

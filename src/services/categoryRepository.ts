@@ -5,11 +5,16 @@ import { readFileSync } from "fs";
 import { INITIAL_CATEGORIES } from "../config/constants";
 import { getContacts } from "./contactRepository";
 import { log } from "@clack/prompts";
+import { Contact } from "../types/contact";
 
 let categories: string[] = [];
 
-export function initCategories(): void {
-  categories = loadCategoryData();
+export function getCategoryList(): string[] {
+  return categories;
+}
+
+export function initCategories(contacts: Contact[]): void {
+  categories = Array.from(new Set(contacts.flatMap((c) => c.categories || [])));
 }
 
 export function loadCategoryData(): string[] {
@@ -45,14 +50,14 @@ function getUsedCategories(): string[] {
   );
 }
 
-export function getCategoryList(): string[] | null {
-  if (categories.length === 0) {
-    log.message("No categories available.");
-    return null;
-  }
+// export function getCategoryList(): string[] | null {
+//   if (categories.length === 0) {
+//     log.message("No categories available.");
+//     return null;
+//   }
 
-  return categories;
-}
+//   return categories;
+// }
 
 export function setCategoryList(updated: string[]): void {
   categories = updated;

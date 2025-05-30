@@ -1,17 +1,52 @@
+import { isCancel, log, multiselect, note } from "@clack/prompts";
 import { Contact } from "../types/contact";
-import { getCategoryList, saveCategoryList } from "./categoryRepository";
-import { getContacts, saveContacts } from "./contactRepository";
+import {
+  getCategoryList,
+  saveCategoryList,
+  setCategoryList,
+} from "./categoryRepository";
+import { getContacts, saveContacts, setContacts } from "./contactRepository";
 
-export function addCategory(category: string): void {
+export async function addCategory(name: string) {
   const categories = getCategoryList();
-  if (!categories) return;
-  saveCategoryList([...categories, category]);
+  if (!categories || categories.includes(name)) throw new Error("fjrdrf");
+  await addCategoryToContacts(getContacts(), categories, name);
 }
 
+export async function addCategoryToContacts(
+  contacts: Contact[],
+  categories: string[],
+  category: string
+) {
+  const selected = await multiselect({
+    message: `Assign "${category}" to selected contacts:`,
+    options: contacts.map((c, i) => ({
+      label: `${c.name} (${c.phone})`,
+      value: i.toString(),
+    })),
+  });
+
+  if (!selected || isCancel(selected)) return;
+
+  const updatedContacts = contacts.map((c, i) => {
+    if (selected.includes(i.toString())) {
+      return {
+        ...c,
+        categories: [...(c.categories || []), category],
+      };
+    }
+    return c;
+  });
+
+  note(`✅ Category "${category}" added to ${selected.length} contact(s).`);
+
+  saveCategoryList([...categories, category]);
+  saveContacts(updatedContacts);
+}
 export function renameCategory(oldName: string, newName: string): void {
   const categories = getCategoryList();
   if (!categories) return;
-  if (categoryExists(newName, categories)) return;
+  // if (categoryExists(newName, categories)) return;
 
   updateCategoryList(oldName, newName, categories);
   updateContactsCategory(oldName, newName);
@@ -20,10 +55,6 @@ export function renameCategory(oldName: string, newName: string): void {
 export function deleteCategory(name: string): void {
   removeCategoryFromList(name);
   removeCategoryFromContacts(name);
-}
-
-export function categoryExists(name: string, categories: string[]): boolean {
-  return categories.includes(name.trim());
 }
 
 export function updateCategoryList(
@@ -49,6 +80,7 @@ export function updateContactsCategory(oldName: string, newName: string): void {
 
 export function removeCategoryFromList(name: string): void {
   const categories = getCategoryList();
+
   if (!categories) return;
   const updated = categories.filter((c) => c !== name);
   saveCategoryList(updated);

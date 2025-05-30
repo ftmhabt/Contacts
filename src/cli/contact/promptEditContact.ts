@@ -8,6 +8,7 @@ import {
 import { isCancel, multiselect } from "@clack/prompts";
 import { getCategoryList } from "../../services/categoryRepository";
 import { SelectContactIndex } from "../select";
+import { getContacts } from "../../services/contactRepository";
 
 const nameValidator = combineValidators((s) => ValidateStringLength(s, 3, 20));
 const phoneValidator = combineValidators(
