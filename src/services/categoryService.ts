@@ -1,100 +1,137 @@
-import { isCancel, log, multiselect, note } from "@clack/prompts";
+import { isCancel, multiselect } from "@clack/prompts";
 import { Contact } from "../types/contact";
-import {
-  getCategoryList,
-  saveCategoryList,
-  setCategoryList,
-} from "./categoryRepository";
-import { getContacts, saveContacts, setContacts } from "./contactRepository";
+import { getCategoryList, saveCategoryList } from "./categoryRepository";
+import { getContacts, saveContacts } from "./contactRepository";
 
-export async function addCategory(name: string) {
-  const categories = getCategoryList();
-  if (!categories || categories.includes(name)) throw new Error("fjrdrf");
-  await addCategoryToContacts(getContacts(), categories, name);
+export async function addCategory(name: string): Promise<void> {
+  const categories = getValidCategoryList();
+
+  if (categoryExists(name, categories)) {
+    throw new Error(`Category "${name}" already exists.`);
+  }
+
+  saveCategoryList([...categories, name]);
+
+  const contacts = getContacts();
+  const selectedContactIndexes = await selectContactsToAssign(contacts, name);
+  if (!selectedContactIndexes) return;
+
+  const updatedContacts = assignCategoryToSelectedContacts(
+    contacts,
+    selectedContactIndexes,
+    name
+  );
+  saveContacts(updatedContacts);
 }
 
-export async function addCategoryToContacts(
+export async function selectContactsToAssign(
   contacts: Contact[],
-  categories: string[],
   category: string
-) {
-  const selected = await multiselect({
+): Promise<string[] | null> {
+  const selection = await multiselect({
     message: `Assign "${category}" to selected contacts:`,
-    options: contacts.map((c, i) => ({
-      label: `${c.name} (${c.phone})`,
-      value: i.toString(),
+    options: contacts.map((contact, index) => ({
+      label: `${contact.name} (${contact.phone})`,
+      value: index.toString(),
     })),
   });
 
-  if (!selected || isCancel(selected)) return;
+  if (!selection || isCancel(selection)) {
+    return null;
+  }
 
-  const updatedContacts = contacts.map((c, i) => {
-    if (selected.includes(i.toString())) {
-      return {
-        ...c,
-        categories: [...(c.categories || []), category],
-      };
-    }
-    return c;
-  });
+  return selection;
+}
 
-  note(`✅ Category "${category}" added to ${selected.length} contact(s).`);
+export function assignCategoryToSelectedContacts(
+  contacts: Contact[],
+  selectedIndexes: string[],
+  category: string
+): Contact[] {
+  return contacts.map((contact, index) =>
+    selectedIndexes.includes(index.toString())
+      ? {
+          ...contact,
+          categories: Array.from(
+            new Set([...(contact.categories || []), category])
+          ),
+        }
+      : contact
+  );
+}
 
-  saveCategoryList([...categories, category]);
+export function renameCategory(oldName: string, newName: string): void {
+  const categories = getValidCategoryList();
+
+  if (categoryExists(newName, categories)) {
+    throw new Error(`Category "${newName}" already exists.`);
+  }
+
+  const updatedCategories = renameCategoryInList(categories, oldName, newName);
+  saveCategoryList(updatedCategories);
+
+  const contacts = getContacts();
+  const updatedContacts = renameCategoryInContacts(contacts, oldName, newName);
   saveContacts(updatedContacts);
 }
-export function renameCategory(oldName: string, newName: string): void {
-  const categories = getCategoryList();
-  if (!categories) return;
-  // if (categoryExists(newName, categories)) return;
 
-  updateCategoryList(oldName, newName, categories);
-  updateContactsCategory(oldName, newName);
+function categoryExists(name: string, categories: string[]): boolean {
+  return categories.some((c) => c.toLowerCase() === name.toLowerCase());
 }
 
-export function deleteCategory(name: string): void {
-  removeCategoryFromList(name);
-  removeCategoryFromContacts(name);
-}
-
-export function updateCategoryList(
+export function renameCategoryInList(
+  categories: string[],
   oldName: string,
-  newName: string,
-  categories: string[]
-): void {
-  const updated = categories.map((c) => (c === oldName ? newName : c));
-  saveCategoryList(updated);
+  newName: string
+): string[] {
+  return categories.map((c) => (c === oldName ? newName : c));
 }
 
-export function updateContactsCategory(oldName: string, newName: string): void {
-  const contacts = getContacts();
-  const updatedContacts = contacts.map((contact) => ({
+export function renameCategoryInContacts(
+  contacts: Contact[],
+  oldName: string,
+  newName: string
+): Contact[] {
+  return contacts.map((contact) => ({
     ...contact,
     categories: Array.isArray(contact.categories)
       ? contact.categories.map((c) => (c === oldName ? newName : c))
       : [],
   }));
+}
 
+export function deleteCategory(name: string): void {
+  const categories = getValidCategoryList();
+
+  const updatedCategories = removeCategoryFromList(categories, name);
+  saveCategoryList(updatedCategories);
+
+  const contacts = getContacts();
+  const updatedContacts = removeCategoryFromContacts(contacts, name);
   saveContacts(updatedContacts);
 }
 
-export function removeCategoryFromList(name: string): void {
-  const categories = getCategoryList();
-
-  if (!categories) return;
-  const updated = categories.filter((c) => c !== name);
-  saveCategoryList(updated);
+export function removeCategoryFromList(
+  categories: string[],
+  name: string
+): string[] {
+  return categories.filter((c) => c !== name);
 }
 
-export function removeCategoryFromContacts(categoryName: string): void {
-  const contacts = getContacts();
-
-  const updatedContacts: Contact[] = contacts.map((contact) => ({
+export function removeCategoryFromContacts(
+  contacts: Contact[],
+  categoryName: string
+): Contact[] {
+  return contacts.map((contact) => ({
     ...contact,
     categories: Array.isArray(contact.categories)
       ? contact.categories.filter((c) => c !== categoryName)
       : [],
   }));
+}
 
-  saveContacts(updatedContacts);
+function getValidCategoryList(): string[] {
+  const categories = getCategoryList();
+  if (!categories) throw new Error("Failed to retrieve existing categories.");
+  return categories;
 }
