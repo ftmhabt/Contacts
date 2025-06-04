@@ -1,6 +1,6 @@
 import { confirm, log } from "@clack/prompts";
 import { getContacts } from "../../services/contactRepository";
-import { SelectContactIndex } from "../../cli/select";
+import { SelectContactIndex } from "../../utils/select";
 import { deleteContact } from "../../services/contactService";
 import { HandleError } from "../../utils";
 

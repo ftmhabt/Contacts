@@ -1,6 +1,7 @@
-import { MainAction } from "../types/action";
-import { CategoryMenu } from "./category/menu";
-import { ContactMenu } from "./contact/menu";
+import { exit } from "process";
+import { MainAction } from "../../types/action";
+import { ContactMenu } from "../contact/menu";
+import { CategoryMenu } from "../category/menu";
 
 export async function HandleAction(action: MainAction): Promise<void> {
   if (action === "contacts") {
@@ -13,5 +14,6 @@ export async function HandleAction(action: MainAction): Promise<void> {
 
   if (action === "exit") {
     console.log("Goodbye!");
+    exit();
   }
 }

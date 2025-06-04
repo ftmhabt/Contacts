@@ -1,12 +1,12 @@
 import { MainAction } from "../types/action";
 import { HandleError, LogAppHeader } from "../utils";
-import { GetActionFromUser } from "./getUserAction";
-import { HandleAction } from "./handleAction";
+import { GetActionFromUser } from "./main/getUserAction";
+import { HandleAction } from "./main/handleAction";
 
 export async function App(): Promise<void> {
   try {
     LogAppHeader();
-    await runAppLoop();
+    runAppLoop();
   } catch (error) {
     HandleError(error);
   }

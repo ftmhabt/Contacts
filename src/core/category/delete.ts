@@ -1,8 +1,7 @@
-import { confirm, isCancel, log, select } from "@clack/prompts";
+import { confirm, log, select } from "@clack/prompts";
 import { getCategoryList } from "../../services/categoryRepository";
 import { deleteCategory } from "../../services/categoryService";
 import { HandleError } from "../../utils";
-import { getContacts } from "../../services/contactRepository";
 
 export async function Delete(): Promise<void> {
   try {

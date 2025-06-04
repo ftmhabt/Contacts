@@ -1,5 +1,5 @@
 import { select } from "@clack/prompts";
-import { CategoryAction, ContactAction } from "../../types/action";
+import { CategoryAction } from "../../types/action";
 
 export async function GetActionFromUser(): Promise<CategoryAction> {
   const action = await select({

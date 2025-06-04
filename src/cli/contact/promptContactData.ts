@@ -1,13 +1,12 @@
+import { isCancel, multiselect } from "@clack/prompts";
+import { Contact } from "../../types/contact";
+import { getCategoryList } from "../../services/categoryRepository";
 import {
   combineValidators,
-  ValidateStringLength,
+  GetValidInput,
   ValidateNumericInput,
-} from "../../validation";
-import { GetValidInput } from "../../utils";
-import { Contact } from "../../types/contact";
-import { isCancel, multiselect } from "@clack/prompts";
-import { getCategoryList } from "../../services/categoryRepository";
-import { getContacts } from "../../services/contactRepository";
+  ValidateStringLength,
+} from "../../utils";
 
 const nameValidator = combineValidators((s) => ValidateStringLength(s, 3, 20));
 

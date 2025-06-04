@@ -1,14 +1,12 @@
+import { isCancel, multiselect, select } from "@clack/prompts";
 import { Contact } from "../../types/contact";
-import { GetValidInput } from "../../utils";
+import { getCategoryList } from "../../services/categoryRepository";
 import {
   combineValidators,
-  ValidateStringLength,
+  GetValidInput,
   ValidateNumericInput,
-} from "../../validation";
-import { isCancel, multiselect } from "@clack/prompts";
-import { getCategoryList } from "../../services/categoryRepository";
-import { SelectContactIndex } from "../select";
-import { getContacts } from "../../services/contactRepository";
+  ValidateStringLength,
+} from "../../utils";
 
 const nameValidator = combineValidators((s) => ValidateStringLength(s, 3, 20));
 const phoneValidator = combineValidators(
@@ -64,4 +62,23 @@ export async function promptEditedContact(contacts: Contact[]) {
     index,
     updatedContact: { name, phone, categories },
   };
+}
+
+export async function SelectContactIndex(
+  message: string,
+  contacts: Contact[]
+): Promise<number | null> {
+  if (contacts.length === 0) return null;
+
+  const options = contacts.map((c, i) => ({
+    label: `${c.name} - ${c.phone}`,
+    value: i,
+  }));
+
+  const result = await select({
+    message,
+    options,
+  });
+
+  return typeof result === "number" ? result : null;
 }

@@ -1,5 +1,5 @@
 import { select } from "@clack/prompts";
-import { MainAction } from "../types/action";
+import { MainAction } from "../../types/action";
 
 export async function GetActionFromUser(): Promise<MainAction> {
   const action = await select({

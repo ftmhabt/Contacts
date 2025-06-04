@@ -1,6 +1,6 @@
 import { isCancel, multiselect } from "@clack/prompts";
 import { Contact } from "../types/contact";
-import { getCategoryList, saveCategoryList } from "./categoryRepository";
+import { getCategoryList, setCategoryList } from "./categoryRepository";
 import { getContacts, saveContacts } from "./contactRepository";
 
 export async function addCategory(name: string): Promise<void> {
@@ -10,7 +10,7 @@ export async function addCategory(name: string): Promise<void> {
     throw new Error(`Category "${name}" already exists.`);
   }
 
-  saveCategoryList([...categories, name]);
+  setCategoryList([...categories, name]);
 
   const contacts = getContacts();
   const selectedContactIndexes = await selectContactsToAssign(contacts, name);
@@ -68,7 +68,7 @@ export function renameCategory(oldName: string, newName: string): void {
   }
 
   const updatedCategories = renameCategoryInList(categories, oldName, newName);
-  saveCategoryList(updatedCategories);
+  setCategoryList(updatedCategories);
 
   const contacts = getContacts();
   const updatedContacts = renameCategoryInContacts(contacts, oldName, newName);
@@ -104,7 +104,7 @@ export function deleteCategory(name: string): void {
   const categories = getValidCategoryList();
 
   const updatedCategories = removeCategoryFromList(categories, name);
-  saveCategoryList(updatedCategories);
+  setCategoryList(updatedCategories);
 
   const contacts = getContacts();
   const updatedContacts = removeCategoryFromContacts(contacts, name);

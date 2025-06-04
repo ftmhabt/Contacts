@@ -3,7 +3,6 @@ import { getCategoryList } from "../../services/categoryRepository";
 import { promptRenamedCategory } from "../../cli/category/promptRenamedCategory";
 import { renameCategory } from "../../services/categoryService";
 import { HandleError } from "../../utils";
-import { getContacts } from "../../services/contactRepository";
 
 export async function Rename(): Promise<void> {
   try {

@@ -1,4 +1,4 @@
-import { MainAction } from "../types/action";
+import { MainAction } from "../../types/action";
 import { GetActionFromUser } from "./getUserAction";
 import { HandleAction } from "./handleAction";
 
